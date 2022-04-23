@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1650714981 source:c:\users\jamie\desktop\chess\main.cpp
+	<memory>
+	<chess.h>
+
+1650714733 source:c:\users\jamie\desktop\chess\src\chess.cpp
+	"chess.h"
+
+1650714967 c:\users\jamie\desktop\chess\include\chess.h
+	<string>
+	<array>
+	<vector>
+	<iostream>
+
