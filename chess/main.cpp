@@ -2,7 +2,7 @@
 #include <memory>
 #include <chess.h>
 chess::chess(){}
-chess::~chess(){}
+chess::~chess(){delete selection;}
 
 
 

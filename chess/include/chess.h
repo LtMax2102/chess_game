@@ -10,13 +10,14 @@
 #include <map>
 class chess {
     int count = 0, column, letter = 1, rowInt, maxMovesY, maxMovesX, movement;
-    char selection, row;
+    char  row, buffer;
+    char* selection;
     std::string input;
     std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"}};
     std::vector<std::string> validMoves;
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
-    char board[8][8] = {{'R','H','B','Q','K','B','H','R'},
-                        {'P','P','P','P','P','P','P','P'},
+    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
+                        {'p','p','p','p','p','p','p','p'},
                         {'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
@@ -74,12 +75,15 @@ class chess {
     void getSelection(){
             switch(row){
         case 'A':
+        case 'a':
             rowInt = 0;
             break;
         case 'B':
+        case 'b':
             rowInt = 1;
             break;
         case 'C':
+        case 'c':
             rowInt = 2;
             break;
         case 'D':
@@ -99,18 +103,39 @@ class chess {
             break;
         default:
             std::cout << "Letter is not Valid\n";
+            break;
         }
-        selection = board[rowInt][column-1];
-        switch(selection){
-        case 'P':
+        selection = &board[rowInt][column-1];
+        switch(*selection){
+        case 'p':
             maxMovesX = 0;
             maxMovesY = 1;
             break;
-
+        case 'P':
+            maxMovesX = 0;
+            maxMovesY = -1;
+            break;
+        default:
+            maxMovesX = 0;
+            maxMovesY = 0;
+            std::cout << "Selection is invalid\n";
         }
     }
     void movePiece(){
-        board[rowInt+maxMovesX][(column-1) + maxMovesY];
+//        std::cout << "Before move: " << *selection << "\n";
+//        std::cout << "After move: " << board[rowInt+maxMovesY][(column-1) + maxMovesX] << "\n";
+        if(*selection == '-'){
+            return;
+        }
+        std::cout << "You have selected the " << pieces[*selection] << "\n";
+        std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
+        buffer = board[rowInt+maxMovesY][(column-1) + maxMovesX];
+        if(buffer != '-'){
+            return;
+        }
+        board[rowInt+maxMovesY][(column-1) + maxMovesX] = *selection;
+        *selection = buffer;
+
         // calculate all the moves that can be done and add them to the move vector, then show the player these moves
 
     }
@@ -127,10 +152,8 @@ public:
                 continue;
             }
             getSelection();
-            std::cout << "You have selected the " << pieces[selection] << "\n";
-            std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
+            movePiece();
             std::this_thread::sleep_for(std::chrono::milliseconds(2000));
-
         }
 
     }
