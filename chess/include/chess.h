@@ -13,7 +13,7 @@ class chess {
     char  row, buffer;
     char* selection;
     std::string input, placeHolder;
-    std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"}};
+    std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"},{'r', "Rook"}, {'h', "Horse"},{'b', "Bishop"},{'q', "Queen"},{'k', "King"},{'p', "Pawn"}};
     std::vector<std::string> validMoves;
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
     char board[8][8] = {{'r','h','b','q','k','b','h','r'},
@@ -57,10 +57,13 @@ class chess {
         }
         return false;
     }
+    // Takes input as argument and makes sure that it's two long
     bool checkAndBreak(std::string &str){
         if(str.size() > 2){std::cout << "Input must be a length of 2\n\n";return false;}
+
         row = str[0];
-        column = static_cast<int>(str[1]) - 48;
+
+        column = static_cast<int>(str[1] - 48);
         if(checker(row) == false){
             std::cout << "Invalid letter entered\n\n";
             return false;
@@ -72,39 +75,51 @@ class chess {
         printf("Row %c Column %d Selected\n", row, column);
         return true;
     }
-    void getSelection(){
+
+    // Takes the row and converts the character into a number, then sets the selection to the board of both the rowInt and the column then sets the max moves this piece has
+    int getSelection(){
             switch(row){
         case 'A':
         case 'a':
-            rowInt = 0;
+            return 0;
             break;
         case 'B':
         case 'b':
-            rowInt = 1;
+            return 1;
             break;
         case 'C':
         case 'c':
-            rowInt = 2;
+            return 2;
             break;
         case 'D':
-            rowInt = 3;
+        case 'd':
+            return 3;
             break;
         case 'E':
-            rowInt = 4;
+        case 'e':
+            return 4;
             break;
         case 'F':
-            rowInt = 5;
+        case 'f':
+            return 5;
             break;
         case 'G':
-            rowInt = 6;
+        case 'g':
+            return 6;
             break;
         case 'H':
-            rowInt = 7;
+        case 'h':
+            return 7;
             break;
         default:
             std::cout << "Letter is not Valid\n";
+            return 8;
             break;
         }
+
+    }
+
+    void setMoveAmount(){
         selection = &board[rowInt][column-1];
         switch(*selection){
         case 'p':
@@ -131,27 +146,48 @@ class chess {
 
         std::cout << "You have selected the " << pieces[*selection] << "\n";
         std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
-        buffer = board[rowInt+maxMovesY][(column-1) + maxMovesX];
-        if(buffer != '-'){
-            return;
-        }
-        for(int i = 0; i <=  maxMovesY; i++){
+//        if(buffer != '-'){
+//            return;
+//        }
+        for(int i = 1; i <=  maxMovesY; i++){
             if(board[rowInt+i][column-1] == '-'){
                 placeHolder.push_back(alpha[rowInt+i]);
-//                placeHolder.insert()
+                placeHolder.push_back(input[1]);
                 validMoves.push_back(placeHolder);
+                placeHolder.clear();
+                continue;
             }
             break;
         }
-        std::cout << "Printing moves: \n";
+        std::cout << "Printing valid moves: \n";
         for(const auto& i : validMoves){
-            std::cout << i << " ";
+            std::cout << i << ", ";
         }
+        int counts = 1;
         std::cout << "\n";
+        std::string input2;
+        std::cout << "Choose move: ";
+        std::getline(std::cin, input2);
+        for(const auto& i : validMoves){
+            if(i == input2){
+                break;
+            }
+            else if(counts == validMoves.size()){
+                std::cout << "Move was not in list\n";
+                return;
+            }
+            counts += 1;
+            continue;
+        }
+        // input2[0] is the row
+        // input2[1] is the column
 
+        char destination = board[rowInt+maxMovesY][(column-1) + maxMovesX];
+        std::cout << destination << "\n";
+//        buffer = board[rowInt+maxMovesY][(column-1) + maxMovesX];
 //        board[rowInt+maxMovesY][(column-1) + maxMovesX] = *selection;
 //        *selection = buffer;
-
+        validMoves.clear();
         // calculate all the moves that can be done and add them to the move vector, then show the player these moves
 
     }
@@ -167,7 +203,9 @@ public:
                 std::this_thread::sleep_for(std::chrono::milliseconds(2000));
                 continue;
             }
-            getSelection();
+            rowInt = getSelection();
+            if(rowInt == 8){continue;}
+            setMoveAmount();
             movePiece();
             std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         }
