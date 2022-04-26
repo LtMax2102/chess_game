@@ -9,9 +9,10 @@
 #include <thread>
 #include <map>
 class chess {
-    int count = 0, column, letter = 1, rowInt, maxMovesY, maxMovesX, movement;
+    int count = 0, column, column2, letter = 1, rowInt, maxMovesY, maxMovesX, movement;
     char  row, buffer;
     char* selection;
+    char* destination;
     std::string input, placeHolder;
     std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"},{'r', "Rook"}, {'h', "Horse"},{'b', "Bishop"},{'q', "Queen"},{'k', "King"},{'p', "Pawn"}};
     std::vector<std::string> validMoves;
@@ -128,7 +129,7 @@ class chess {
             break;
         case 'P':
             maxMovesX = 0;
-            maxMovesY = -1;
+            maxMovesY = -4;
             break;
         default:
             maxMovesX = 0;
@@ -149,6 +150,7 @@ class chess {
 //        if(buffer != '-'){
 //            return;
 //        }
+        // Lower case moves
         for(int i = 1; i <=  maxMovesY; i++){
             if(board[rowInt+i][column-1] == '-'){
                 placeHolder.push_back(alpha[rowInt+i]);
@@ -159,11 +161,14 @@ class chess {
             }
             break;
         }
+
+        // Upper case moves
+
         std::cout << "Printing valid moves: \n";
         for(const auto& i : validMoves){
             std::cout << i << ", ";
         }
-        int counts = 1;
+        unsigned counts = 1;
         std::cout << "\n";
         std::string input2;
         std::cout << "Choose move: ";
@@ -174,21 +179,28 @@ class chess {
             }
             else if(counts == validMoves.size()){
                 std::cout << "Move was not in list\n";
+                validMoves.clear();
                 return;
             }
             counts += 1;
             continue;
         }
-        // input2[0] is the row
-        // input2[1] is the column
 
-        char destination = board[rowInt+maxMovesY][(column-1) + maxMovesX];
-        std::cout << destination << "\n";
-//        buffer = board[rowInt+maxMovesY][(column-1) + maxMovesX];
-//        board[rowInt+maxMovesY][(column-1) + maxMovesX] = *selection;
-//        *selection = buffer;
+        // Sets row equal to the input letter
+        row = input2[0];
+        // Sets column to to be equal to correct number
+        column2 = input2[1] - 48;
+        // Sets destination to the chosen move in the list
+        destination = &board[getSelection()][column2-1];
+
+        // Holds value of destination
+        buffer = *destination;
+        // Sets destination to be the selected piece
+        *destination = *selection;
+        // Sets the selection position to be equal to the value held in the buffer
+        *selection = buffer;
+        // Clears the valid moves so that it can be refilled next time
         validMoves.clear();
-        // calculate all the moves that can be done and add them to the move vector, then show the player these moves
 
     }
 public:
