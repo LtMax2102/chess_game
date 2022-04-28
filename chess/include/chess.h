@@ -17,14 +17,23 @@ class chess {
     std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"},{'r', "Rook"}, {'h', "Horse"},{'b', "Bishop"},{'q', "Queen"},{'k', "King"},{'p', "Pawn"}};
     std::vector<std::string> validMoves;
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
-    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
-                        {'p','p','p','p','p','p','p','p'},
+//    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
+//                        {'p','p','p','p','p','p','p','p'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'P','P','P','P','P','P','P','P'},
+//                        {'R','H','B','K','Q','B','H','R'}};
+    // Board for testing pieces
+    char board[8][8] = {{'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
                         {'-','-','-','-','-','-','-','-'},
-                        {'P','P','P','P','P','P','P','P'},
-                        {'R','H','B','K','Q','B','H','R'}};
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','R','-','-','-'}};
 
 
     void printBoard(){
@@ -124,13 +133,25 @@ class chess {
         selection = &board[rowInt][column-1];
         switch(*selection){
         case 'p':
+        case 'P':
             maxMovesX = 0;
             maxMovesY = 1;
             break;
-        case 'P':
-            maxMovesX = 0;
-            maxMovesY = -4;
+        case 'r':
+        case 'R':
+            maxMovesX = 8;
+            maxMovesY = 8;
             break;
+//        case 'r':
+//        case 'R':
+//            maxMovesX = 8;
+//            maxMovesY = 8;
+//            break;
+//        case 'r':
+//        case 'R':
+//            maxMovesX = 8;
+//            maxMovesY = 8;
+//            break;
         default:
             maxMovesX = 0;
             maxMovesY = 0;
@@ -147,23 +168,43 @@ class chess {
 
         std::cout << "You have selected the " << pieces[*selection] << "\n";
         std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
-//        if(buffer != '-'){
-//            return;
-//        }
-        // Lower case moves
-        for(int i = 1; i <=  maxMovesY; i++){
-            if(board[rowInt+i][column-1] == '-'){
-                placeHolder.push_back(alpha[rowInt+i]);
-                placeHolder.push_back(input[1]);
-                validMoves.push_back(placeHolder);
-                placeHolder.clear();
-                continue;
+        if(isupper(*selection)){
+            // If selection is uppercase
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
             }
-            break;
+            for(int i = 1; i <= maxMovesX; i++){
+                if(board[rowInt][(column)-i] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
         }
-
-        // Upper case moves
-
+        else{
+            // If selection is lowercase
+            for(int i = 1; i <=  maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
+        }
+        // Print all valid moves in vector
         std::cout << "Printing valid moves: \n";
         for(const auto& i : validMoves){
             std::cout << i << ", ";

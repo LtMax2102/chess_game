@@ -17,6 +17,5 @@ int main(){
     Chess->beginGame();
 
     delete Chess;
-
     return 0;
 }
