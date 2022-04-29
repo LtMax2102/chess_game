@@ -15,7 +15,7 @@ class chess {
     char* destination;
     std::string input, placeHolder;
     std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"},{'r', "Rook"}, {'h', "Horse"},{'b', "Bishop"},{'q', "Queen"},{'k', "King"},{'p', "Pawn"}};
-    std::vector<std::string> validMoves;
+    std::vector<std::string> validYMoves;
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
 //    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
 //                        {'p','p','p','p','p','p','p','p'},
@@ -168,45 +168,58 @@ class chess {
 
         std::cout << "You have selected the " << pieces[*selection] << "\n";
         std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
-        if(isupper(*selection)){
-            // If selection is uppercase
+//        if(isupper(*selection)){
+//            // If selection is uppercase
+//            for(int i = 1; i <= maxMovesY; i++){
+//                if(board[rowInt-i][column-1] == '-'){
+//                    placeHolder.push_back(alpha[rowInt-i]);
+//                    placeHolder.push_back(input[1]);
+//                    validYMoves.push_back(placeHolder);
+//                    placeHolder.clear();
+//                    continue;
+//                }
+//                break;
+//            }
+//        }
+//        else{
+//            // If selection is lowercase
+//            for(int i = 1; i <=  maxMovesY; i++){
+//                if(board[rowInt+i][column-1] == '-'){
+//                    placeHolder.push_back(alpha[rowInt+i]);
+//                    placeHolder.push_back(input[1]);
+//                    validYMoves.push_back(placeHolder);
+//                    placeHolder.clear();
+//                    continue;
+//                }
+//                break;
+//            }
+//        }
+
+            std::cout << rowInt << "\n";
             for(int i = 1; i <= maxMovesY; i++){
                 if(board[rowInt-i][column-1] == '-'){
                     placeHolder.push_back(alpha[rowInt-i]);
                     placeHolder.push_back(input[1]);
-                    validMoves.push_back(placeHolder);
+                    validYMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
                 }
                 break;
             }
-            for(int i = 1; i <= maxMovesX; i++){
-                if(board[rowInt][(column)-i] == '-'){
-                    placeHolder.push_back(alpha[rowInt-i]);
-                    placeHolder.push_back(input[1]);
-                    validMoves.push_back(placeHolder);
-                    placeHolder.clear();
-                    continue;
-                }
-                break;
-            }
-        }
-        else{
-            // If selection is lowercase
-            for(int i = 1; i <=  maxMovesY; i++){
+            for(int i = 1; i <= maxMovesY; i++){
                 if(board[rowInt+i][column-1] == '-'){
                     placeHolder.push_back(alpha[rowInt+i]);
                     placeHolder.push_back(input[1]);
-                    validMoves.push_back(placeHolder);
+                    validYMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
                 }
                 break;
             }
-        }
+
         // Print all valid moves in vector
-        std::cout << "Printing valid moves: \n";
-        for(const auto& i : validMoves){
+        std::cout << "Printing valid moves: \n Y: ";
+        for(const auto& i : validYMoves){
             std::cout << i << ", ";
         }
         unsigned counts = 1;
@@ -214,13 +227,13 @@ class chess {
         std::string input2;
         std::cout << "Choose move: ";
         std::getline(std::cin, input2);
-        for(const auto& i : validMoves){
+        for(const auto& i : validYMoves){
             if(i == input2){
                 break;
             }
-            else if(counts == validMoves.size()){
+            else if(counts == validYMoves.size()){
                 std::cout << "Move was not in list\n";
-                validMoves.clear();
+                validYMoves.clear();
                 return;
             }
             counts += 1;
@@ -241,7 +254,7 @@ class chess {
         // Sets the selection position to be equal to the value held in the buffer
         *selection = buffer;
         // Clears the valid moves so that it can be refilled next time
-        validMoves.clear();
+        validYMoves.clear();
 
     }
 public:
