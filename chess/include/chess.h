@@ -15,7 +15,8 @@ class chess {
     char* destination;
     std::string input, placeHolder;
     std::map<char, std::string> pieces = {{'R', "Rook"}, {'H', "Horse"},{'B', "Bishop"},{'Q', "Queen"},{'K', "King"},{'P', "Pawn"},{'r', "Rook"}, {'h', "Horse"},{'b', "Bishop"},{'q', "Queen"},{'k', "King"},{'p', "Pawn"}};
-    std::vector<std::string> validYMoves;
+    std::vector<std::string> validYMoves;    std::vector<std::string> validXMoves;
+
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
 //    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
 //                        {'p','p','p','p','p','p','p','p'},
@@ -45,7 +46,7 @@ class chess {
                     count = 0;
                     letter++;
                 }
-                std::cout << board[i][j] << " ";
+                std::cout << board[i][j] << "";
                 count += 1;
             }
         }
@@ -128,7 +129,7 @@ class chess {
         }
 
     }
-
+    // Might need to add a movement selection so that it changes depending on the piece
     void setMoveAmount(){
         selection = &board[rowInt][column-1];
         switch(*selection){
@@ -194,29 +195,40 @@ class chess {
 //                break;
 //            }
 //        }
+//
+//            std::cout << rowInt << "\n";
+//            for(int i = 1; i <= maxMovesY; i++){
+//                if(board[rowInt-i][column-1] == '-'){
+//                    placeHolder.push_back(alpha[rowInt-i]);
+//                    placeHolder.push_back(input[1]);
+//                    validYMoves.push_back(placeHolder);
+//                    placeHolder.clear();
+//                    continue;
+//                }
+//                break;
+//            }
+//            for(int i = 1; i <= maxMovesY; i++){
+//                if(board[rowInt+i][column-1] == '-'){
+//                    placeHolder.push_back(alpha[rowInt+i]);
+//                    placeHolder.push_back(input[1]);
+//                    validYMoves.push_back(placeHolder);
+//                    placeHolder.clear();
+//                    continue;
+//                }
+//                break;
+//            }
 
-            std::cout << rowInt << "\n";
-            for(int i = 1; i <= maxMovesY; i++){
+            for(int i = 1; i <= maxMovesX; i++){
+
                 if(board[rowInt-i][column-1] == '-'){
                     placeHolder.push_back(alpha[rowInt-i]);
                     placeHolder.push_back(input[1]);
-                    validYMoves.push_back(placeHolder);
+                    validXMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
                 }
                 break;
             }
-            for(int i = 1; i <= maxMovesY; i++){
-                if(board[rowInt+i][column-1] == '-'){
-                    placeHolder.push_back(alpha[rowInt+i]);
-                    placeHolder.push_back(input[1]);
-                    validYMoves.push_back(placeHolder);
-                    placeHolder.clear();
-                    continue;
-                }
-                break;
-            }
-
         // Print all valid moves in vector
         std::cout << "Printing valid moves: \n Y: ";
         for(const auto& i : validYMoves){
@@ -289,7 +301,7 @@ public:
 
 
 
-
+// Could make another chess board where all the pieces are classes and it changes what they do depending on what piece it is, would probably work better than this one lmao
 
 
 
