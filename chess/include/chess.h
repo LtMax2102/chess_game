@@ -8,6 +8,13 @@
 #include <chrono>
 #include <thread>
 #include <map>
+template<typename T>
+void printAOrV(T i){
+    for(const auto& j : i){
+        std::cout << j << ", ";
+    }
+    std::cout << "\n";
+}
 class chess {
     int count = 0, column, column2, letter = 1, rowInt, maxMovesY, maxMovesX, movement;
     char  row, buffer;
@@ -217,23 +224,27 @@ class chess {
 //                }
 //                break;
 //            }
+//
+//            for(int i = 1; i <= maxMovesX; i++){
+//
+//                if(board[rowInt][column-i] == '-'){
+//                    placeHolder.push_back(alpha[rowInt]);
+//                    placeHolder.push_back(column-i);
+//                    validXMoves.push_back(placeHolder);
+//                    placeHolder.clear();
+//                    continue;
+//                }
+//                break;
+//            }
 
-            for(int i = 1; i <= maxMovesX; i++){
-
-                if(board[rowInt-i][column-1] == '-'){
-                    placeHolder.push_back(alpha[rowInt-i]);
-                    placeHolder.push_back(input[1]);
-                    validXMoves.push_back(placeHolder);
-                    placeHolder.clear();
-                    continue;
-                }
-                break;
-            }
         // Print all valid moves in vector
         std::cout << "Printing valid moves: \n Y: ";
-        for(const auto& i : validYMoves){
-            std::cout << i << ", ";
-        }
+        printAOrV(validYMoves);
+        std::cout << " X: ";
+        printAOrV(validXMoves);
+//        for(const auto& i : validYMoves){
+//            std::cout << i << ", ";
+//        }
         unsigned counts = 1;
         std::cout << "\n";
         std::string input2;
