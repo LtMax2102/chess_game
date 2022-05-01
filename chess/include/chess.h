@@ -16,7 +16,7 @@ void printAOrV(T i){
     std::cout << "\n";
 }
 class chess {
-    int count = 0, column, column2, letter = 1, rowInt, maxMovesY, maxMovesX, movement;
+    int count = 0, column, column2, letter = 1, rowInt, maxMovesY, maxMovesX, movement, blackPieces = 16, whitePieces = 16;
     char  row, buffer;
     char* selection;
     char* destination;
@@ -25,25 +25,25 @@ class chess {
     std::vector<std::string> validYMoves;    std::vector<std::string> validXMoves;
 
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
-//    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
-//                        {'p','p','p','p','p','p','p','p'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'P','P','P','P','P','P','P','P'},
-//                        {'R','H','B','K','Q','B','H','R'}};
+    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
+                        {'p','p','p','p','p','p','p','p'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'P','P','P','P','P','P','P','P'},
+                        {'R','H','B','K','Q','B','H','R'}};
     // Board for testing pieces
-    char board[8][8] = {{'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','R','-','-','-'}};
+//    char board[8][8] = {{'-','-','-','-','r','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','R','-','-','-'},
+//                        {'-','-','-','-','R','-','-','-'}};
 
-
+    // Prints the board
     void printBoard(){
         std::cout << "A: ";
         for(int i = 0; i < 8; i++){
@@ -62,10 +62,11 @@ class chess {
         std::cout << "\n  ";
 
         for(int i = 0; i < 8; i++){
-            std::cout << " " << i+1;
+            std::cout << "" << i+1;
         }
         std::cout << std::endl;
     }
+    // Checks to make sure that the chosen letter was within the allowed ones
     bool checker(char &c){
         for(unsigned i = 0; i < alpha.size(); i++){
             if(c == alpha[i]){
@@ -176,92 +177,177 @@ class chess {
 
         std::cout << "You have selected the " << pieces[*selection] << "\n";
         std::cout << "This has a maximum X move of " << maxMovesX << " and a maximum Y move of " << maxMovesY << "\n";
-//        if(isupper(*selection)){
-//            // If selection is uppercase
-//            for(int i = 1; i <= maxMovesY; i++){
-//                if(board[rowInt-i][column-1] == '-'){
-//                    placeHolder.push_back(alpha[rowInt-i]);
-//                    placeHolder.push_back(input[1]);
-//                    validYMoves.push_back(placeHolder);
-//                    placeHolder.clear();
-//                    continue;
-//                }
-//                break;
-//            }
-//        }
-//        else{
-//            // If selection is lowercase
-//            for(int i = 1; i <=  maxMovesY; i++){
-//                if(board[rowInt+i][column-1] == '-'){
-//                    placeHolder.push_back(alpha[rowInt+i]);
-//                    placeHolder.push_back(input[1]);
-//                    validYMoves.push_back(placeHolder);
-//                    placeHolder.clear();
-//                    continue;
-//                }
-//                break;
-//            }
-//        }
-//
-//            std::cout << rowInt << "\n";
-//            for(int i = 1; i <= maxMovesY; i++){
-//                if(board[rowInt-i][column-1] == '-'){
-//                    placeHolder.push_back(alpha[rowInt-i]);
-//                    placeHolder.push_back(input[1]);
-//                    validYMoves.push_back(placeHolder);
-//                    placeHolder.clear();
-//                    continue;
-//                }
-//                break;
-//            }
-//            for(int i = 1; i <= maxMovesY; i++){
-//                if(board[rowInt+i][column-1] == '-'){
-//                    placeHolder.push_back(alpha[rowInt+i]);
-//                    placeHolder.push_back(input[1]);
-//                    validYMoves.push_back(placeHolder);
-//                    placeHolder.clear();
-//                    continue;
-//                }
-//                break;
-//            }
-//
-            std::cout << column << "\n" << rowInt << "\n";
-            for(int i = 1; i <= maxMovesX; i++){
 
-//                if(board[rowInt][column-i] == '-'){
+        // For uppercase characters
+        if(isupper(*selection)){
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
+
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
                     placeHolder.push_back(alpha[rowInt]);
                     placeHolder.push_back((column+48)-i);
                     validXMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
-//                }
-//                break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
+        }
+        // For lowercase characters
+        if(islower(*selection)){
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
             }
 
-        // Print all valid moves in vector
-//        std::cout << "Printing valid moves: \n Y: ";
-//        printAOrV(validYMoves);
-//        std::cout << " X: ";
-//        printAOrV(validXMoves);
-        for(const auto& i : validXMoves){
-            std::cout << i << ", ";
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                break;
+            }
         }
+
+        // Print all valid moves in vectors
+        std::cout << "Printing valid moves: \n Y: ";
+        printAOrV(validYMoves);
+        std::cout << " X: ";
+        printAOrV(validXMoves);
+
+        // Used to count how many moves have been looked at in the vector later
         unsigned counts = 1;
+        // Used later to make sure that only one of the lanes are selected, and that if one is selected the other doesn't conflict with it
+        bool pass = false;
+
         std::cout << "\n";
+        // Used to store the users inputted move
         std::string input2;
+
         std::cout << "Choose move: ";
         std::getline(std::cin, input2);
+        // Looks through the moves and checks to see if they are in the move list, if true will change pass to true so that the other axis isn't checked otherwise will break and allow other axis check to happen
+
+        // Not working needs to be fixed !!!!!!!!!!!
         for(const auto& i : validYMoves){
             if(i == input2){
+                pass = true;
                 break;
             }
             else if(counts == validYMoves.size()){
-                std::cout << "Move was not in list\n";
-                validYMoves.clear();
-                return;
+                break;
             }
             counts += 1;
             continue;
+        }
+        counts = 1;
+        // Only happens if pass isn't true
+        if(pass != true){
+            // Checks the other axis to see if move is in there, if it's not found then it will declare that the move isn't in the vector and clear them before leaving the program
+            for(const auto& i : validXMoves){
+                if(i == input2){
+                    break;
+                }
+                else if(counts == validXMoves.size()){
+                    std::cout << "Move was not in list\n";
+                    validXMoves.clear();
+                    validYMoves.clear();
+                    return;
+                }
+                counts += 1;
+                continue;
+            }
         }
 
         // Sets row equal to the input letter
@@ -270,7 +356,14 @@ class chess {
         column2 = input2[1] - 48;
         // Sets destination to the chosen move in the list
         destination = &board[getSelection()][column2-1];
-
+        if(*destination != '-' && isupper(*destination)){
+            *destination = '-';
+            blackPieces--;
+        }
+        else if(*destination != '-' && islower(*destination)){
+            *destination = '-';
+            whitePieces--;
+        }
         // Holds value of destination
         buffer = *destination;
         // Sets destination to be the selected piece
@@ -279,24 +372,35 @@ class chess {
         *selection = buffer;
         // Clears the valid moves so that it can be refilled next time
         validYMoves.clear();
+        validXMoves.clear();
 
     }
 public:
     void beginGame(){
         bool end = true;
+        // Gives users instructions
         std::cout << "Enter you choice of piece in the following way\nLetter then number e.g B1, C4, H8\n";
+        // Begins the game loop, will happen until someone has lost
         while(end == true){
+            // Prints the board
             printBoard();
             std::cout << "Choose Row and Column: ";
             std::getline(std::cin, input);
+            // Uses the check and break function to check the input, if it returns false will force the thread to sleep and then continue and ask for a move again
             if(checkAndBreak(input) == false){
+                // Sleeps thread
                 std::this_thread::sleep_for(std::chrono::milliseconds(2000));
                 continue;
             }
+            // Sets the rowInt to the correct number based on the selected row
             rowInt = getSelection();
+            // if the rowInt is set to 8 by the function it will then continue and ask for a move again
             if(rowInt == 8){continue;}
+            // Uses the setMoveAmount function to set the move amount depending on the inputted piece
             setMoveAmount();
+            // Moves the piece
             movePiece();
+            // Sleeps the thread for 2000 milliseconds (2 secs)
             std::this_thread::sleep_for(std::chrono::milliseconds(2000));
         }
 
