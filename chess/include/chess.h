@@ -225,26 +225,27 @@ class chess {
 //                break;
 //            }
 //
-//            for(int i = 1; i <= maxMovesX; i++){
-//
+            std::cout << column << "\n" << rowInt << "\n";
+            for(int i = 1; i <= maxMovesX; i++){
+
 //                if(board[rowInt][column-i] == '-'){
-//                    placeHolder.push_back(alpha[rowInt]);
-//                    placeHolder.push_back(column-i);
-//                    validXMoves.push_back(placeHolder);
-//                    placeHolder.clear();
-//                    continue;
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
 //                }
 //                break;
-//            }
+            }
 
         // Print all valid moves in vector
-        std::cout << "Printing valid moves: \n Y: ";
-        printAOrV(validYMoves);
-        std::cout << " X: ";
-        printAOrV(validXMoves);
-//        for(const auto& i : validYMoves){
-//            std::cout << i << ", ";
-//        }
+//        std::cout << "Printing valid moves: \n Y: ";
+//        printAOrV(validYMoves);
+//        std::cout << " X: ";
+//        printAOrV(validXMoves);
+        for(const auto& i : validXMoves){
+            std::cout << i << ", ";
+        }
         unsigned counts = 1;
         std::cout << "\n";
         std::string input2;
