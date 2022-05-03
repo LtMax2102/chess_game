@@ -27,23 +27,23 @@ class chess {
     std::vector<std::string> allMoves;
 
     std::array<char,8> alpha = {'A','B','C','D','E','F','G','H'};
-//    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
-//                        {'p','p','p','p','p','p','p','p'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'-','-','-','-','-','-','-','-'},
-//                        {'P','P','P','P','P','P','P','P'},
-//                        {'R','H','B','K','Q','B','H','R'}};
+    char board[8][8] = {{'r','h','b','q','k','b','h','r'},
+                        {'p','p','p','p','p','p','p','p'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'-','-','-','-','-','-','-','-'},
+                        {'P','P','P','P','P','P','P','P'},
+                        {'R','H','B','K','Q','B','H','R'}};
     // Board for testing pieces
-    char board[8][8] = {{'-','h','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'-','-','-','-','-','-','-','-'},
-                        {'R','-','-','-','-','-','H','-'}};
+//    char board[8][8] = {{'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','-','p','-','-','-'},
+//                        {'-','-','-','P','-','P','-','-'},
+//                        {'-','-','-','-','-','-','-','-'},
+//                        {'-','-','-','p','-','p','-','-'},
+//                        {'-','-','-','-','P','-','-','-'},
+//                        {'-','-','-','-','-','-','-','-'}};
 
     // Prints the board
     void printBoard(){
@@ -163,6 +163,16 @@ class chess {
             maxMovesX = 1;
             maxMovesY = 1;
             break;
+        case 'q':
+        case 'Q':
+            maxMovesX = 8;
+            maxMovesY = 8;
+            break;
+        case 'k':
+        case 'K':
+            maxMovesX = 1;
+            maxMovesY = 1;
+            break;
         default:
             maxMovesX = 0;
             maxMovesY = 0;
@@ -223,6 +233,13 @@ class chess {
                     placeHolder.clear();
                     continue;
                 }
+                else if(islower(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
                 break;
             }
             // Checks along the X axis for positions that are equal to -, going left on the axis
@@ -234,6 +251,13 @@ class chess {
                     validXMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
+                }
+                else if(islower(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
                 }
                 break;
             }
@@ -247,9 +271,17 @@ class chess {
                     placeHolder.clear();
                     continue;
                 }
+                else if(islower(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
                 break;
             }
             break;
+
         case 'r':
             // Checks along the Y axis for positions that are equal to -, going up on the axis
             for(int i = 1; i <= maxMovesY; i++){
@@ -297,6 +329,13 @@ class chess {
                     placeHolder.clear();
                     continue;
                 }
+                else if(isupper(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
                 break;
             }
             // Checks along the X axis for positions that are equal to -, going right on the axis
@@ -308,6 +347,13 @@ class chess {
                     validXMoves.push_back(placeHolder);
                     placeHolder.clear();
                     continue;
+                }
+                else if(isupper(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
                 }
                 break;
             }
@@ -379,6 +425,7 @@ class chess {
                 }
             }
             break;
+
         case 'B':
             // Checks the row up one and column left one until it reaches another piece or the end of the loop
             for(int i = 1; i <= 8; i++){
@@ -445,47 +492,833 @@ class chess {
                 }
             }
             break;
-        case 'h':
 
-            // WORK ON THIS IT NEEDS FIXING
-            std::cout << "Row " << rowInt+1 << " Column " << column-2 << "\n";
+        case 'h':
             // Does loads of if statements to see if the row is empty, could be done more efficiently but I can't be asked right now
             // Look below horse both left and right
-//            if(board[rowInt+2][column] == '-' || isupper(board[rowInt+2][column]) && (rowInt+2) <= 8 && (column) <= 8){
-//                placeHolder.push_back(alpha[rowInt+2]);
-//                placeHolder.push_back((column+48)+1);
-//                allMoves.push_back(placeHolder);
-//                placeHolder.clear();
-//            }
-//            if(board[rowInt+2][column-2] == '-' || isupper(board[rowInt+2][column-2]) && (rowInt+2) <= 8 && (column-2) > 0){
-//                placeHolder.push_back(alpha[rowInt+2]);
-//                placeHolder.push_back((column+48)-1);
-//                allMoves.push_back(placeHolder);
-//                placeHolder.clear();
-//            }
-//
-//            // Looking at left side of horse both up and down
-//            if(board[rowInt+1][column+1] == '-' || isupper(board[rowInt+1][column+1]) && (rowInt+1) <= 8 && (column+1) <= 8){
-//                placeHolder.push_back(alpha[rowInt+1]);
-//                placeHolder.push_back((column+48)+2);
-//                allMoves.push_back(placeHolder);
-//                placeHolder.clear();
-//            }
-//            if(board[rowInt-1][column+2] == '-' || isupper(board[rowInt-1][column+2]) && (rowInt-1) > 0 && (column+2) <= 8){
-//                placeHolder.push_back(alpha[rowInt-1]);
-//                placeHolder.push_back((column+48)+2);
-//                allMoves.push_back(placeHolder);
-//                placeHolder.clear();
-//            }
+            // Right
+            if(board[rowInt+2][column] == '-' && (rowInt+2) <= 8 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt+2][column]) && (rowInt+2) <= 8 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Left
+            if(board[rowInt+2][column-2] == '-' && (rowInt+2) <= 8 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt+2][column-2]) && (rowInt+2) <= 8 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Look up then both left and right
+            // Right
+            if(board[rowInt-2][column] == '-' && (rowInt-2) >= 0 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt-2][column]) && (rowInt-2) >= 0 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Left
+            if(board[rowInt-2][column-2] == '-' && (rowInt-2) >= 0 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt-2][column-2]) && (rowInt-2) >= 0 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Looking at left side of horse both up and down
+            // Down
+            if(board[rowInt+1][column-3] == '-' && (rowInt+1) <= 8 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt+1][column-3]) && (rowInt+1) <= 8 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Up
+            if(board[rowInt-1][column-3] == '-' && (rowInt-1) >= 0 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt-1][column-3]) && (rowInt-1) >= 0 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Look right and then up and down
+            // Down
+            if(board[rowInt+1][column+1] == '-' && (rowInt+1) <= 8 && (column+1) <= 8){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt+1][column+1]) && (rowInt+1) <= 8 && (column+1) <= 8){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Up
+            if(board[rowInt-1][column+1] == '-' && (rowInt-1) >= 0 && (column+1) <= 8){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(isupper(board[rowInt-1][column+1]) && (rowInt-1) >= 0 && (column+1) <= 8){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            break;
 
+        case 'H':
+            // Does loads of if statements to see if the row is empty, could be done more efficiently but I can't be asked right now
+            // Look below horse both left and right
+            // Right
+            if(board[rowInt+2][column] == '-' && (rowInt+2) <= 8 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt+2][column]) && (rowInt+2) <= 8 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Left
+            if(board[rowInt+2][column-2] == '-' && (rowInt+2) <= 8 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt+2][column-2]) && (rowInt+2) <= 8 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt+2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Look up then both left and right
+            // Right
+            if(board[rowInt-2][column] == '-' && (rowInt-2) >= 0 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt-2][column]) && (rowInt-2) >= 0 && (column) < 8){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)+1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Left
+            if(board[rowInt-2][column-2] == '-' && (rowInt-2) >= 0 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt-2][column-2]) && (rowInt-2) >= 0 && (column-2) >= 0){
+                placeHolder.push_back(alpha[rowInt-2]);
+                placeHolder.push_back((column+48)-1);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Looking at left side of horse both up and down
+            // Down
+            if(board[rowInt+1][column-3] == '-' && (rowInt+1) <= 8 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt+1][column-3]) && (rowInt+1) <= 8 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Up
+            if(board[rowInt-1][column-3] == '-' && (rowInt-1) >= 0 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt-1][column-3]) && (rowInt-1) >= 0 && (column-3) >= 0){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)-2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Look right and then up and down
+            // Down
+            if(board[rowInt+1][column+1] == '-' && (rowInt+1) <= 8 && (column+1) < 8){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt+1][column+1]) && (rowInt+1) <= 8 && (column+1) < 8){
+                placeHolder.push_back(alpha[rowInt+1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            // Up
+            if(board[rowInt-1][column+1] == '-' && (rowInt-1) >= 0 && (column+1) < 8){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            else if(islower(board[rowInt-1][column+1]) && (rowInt-1) >= 0 && (column+1) < 8){
+                placeHolder.push_back(alpha[rowInt-1]);
+                placeHolder.push_back((column+48)+2);
+                allMoves.push_back(placeHolder);
+                placeHolder.clear();
+            }
+            break;
 
-//            if(board[rowInt+1][column-3] == '-' || isupper(board[rowInt+1][column-3]) && (rowInt+1) < 8 && (column-3) > 0 ){
-//                placeHolder.push_back(alpha[rowInt]);
-//                placeHolder.push_back((column+48));
-//                allMoves.push_back(placeHolder);
-//                placeHolder.clear();
-//            }
+        case 'q':
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks the row up one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt-i][column-i] == '-' && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt-i][column-i]) && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt+i][column+i] == '-' && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt+i][column+i]) && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt+i][column-i] == '-' && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt+i][column-i]) && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row up one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt-i][column+i] == '-' && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt-i][column+i]) && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            break;
 
+        case 'Q':
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks the row up one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt-i][column-i] == '-' && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt-i][column-i]) && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt+i][column+i] == '-' && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt+i][column+i]) && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt+i][column-i] == '-' && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt+i][column-i]) && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row up one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 8; i++){
+                if(board[rowInt-i][column+i] == '-' && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt-i][column+i]) && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            break;
+
+        case 'k':
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(isupper(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt-i][column-i] == '-' && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt-i][column-i]) && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt+i][column+i] == '-' && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt+i][column+i]) && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt+i][column-i] == '-' && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt+i][column-i]) && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row up one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt-i][column+i] == '-' && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(isupper(board[rowInt-i][column+i]) && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            break;
+        case 'K':
+            // Checks along the Y axis for positions that are equal to -, going up on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt-i][column-1])){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the Y axis for positions that are equal to -, going down on the axis
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-'){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt+i][column-1])){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back(input[1]);
+                    validYMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going left on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)-i] == '-' && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt][(column-1)-i]) && column-i > 0){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)-i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+                break;
+            }
+            // Checks along the X axis for positions that are equal to -, going right on the axis
+            for(int i = 1; i <= maxMovesX; i++){
+//                std::cout << "Row Int: " << rowInt << "\n";
+                if(board[rowInt][(column-1)+i] == '-' && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    continue;
+                }
+                else if(islower(board[rowInt][(column-1)+i]) && column+i <= 8){
+                    placeHolder.push_back(alpha[rowInt]);
+                    placeHolder.push_back((column+48)+i);
+                    validXMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt-i][column-i] == '-' && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt-i][column-i]) && (column-i) > 0 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt+i][column+i] == '-' && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt+i][column+i]) && (column+i) <= 8 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row down one and column left one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt+i][column-i] == '-' && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt+i][column-i]) && (column-i) > 0 && (rowInt+i) <= 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            // Checks the row up one and column right one until it reaches another piece or the end of the loop
+            for(int i = 1; i <= 1; i++){
+                if(board[rowInt-i][column+i] == '-' && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                else if(islower(board[rowInt-i][column+i]) && (column+i) <= 8 && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+i);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                    break;
+                }
+            }
+            break;
+        case 'p':
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt+i][column-1] == '-' && (rowInt+i) < 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48));
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                if(isupper(board[rowInt+i][column]) && column < 8){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)+1);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                if(isupper(board[rowInt+i][column-2]) && (column-2) >= 0){
+                    placeHolder.push_back(alpha[rowInt+i]);
+                    placeHolder.push_back((column+48)-1);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+            }
+            break;
+        case 'P':
+            for(int i = 1; i <= maxMovesY; i++){
+                if(board[rowInt-i][column-1] == '-' && (rowInt-i) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48));
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                if(islower(board[rowInt-i][column]) && column < 8){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)+1);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+                if(islower(board[rowInt-i][column-2]) && (column-2) >= 0){
+                    placeHolder.push_back(alpha[rowInt-i]);
+                    placeHolder.push_back((column+48)-1);
+                    allMoves.push_back(placeHolder);
+                    placeHolder.clear();
+                }
+            }
+            break;
         }
     }
 
@@ -544,7 +1377,8 @@ class chess {
             printAOrV(validXMoves);
         }
         // If both are empty it could mean that the piece doesn't use that vector for it's movement
-        if(validXMoves.size() == 0 && validYMoves.size() == 0){
+        if(allMoves.size() != 0){
+            std::cout << "\nAll Moves Possible\n ";
             printAOrV(allMoves);
         }
 
@@ -610,9 +1444,9 @@ public:
     void beginGame(){
         // Gives users instructions ACTIVATE BEFORE ACTUAL USE, DISABLED FOR TESTING BECAUSE I CAN'T BE ASKED TO WAIT ALL THE TIME
 
-//        std::cout << "Enter you choice of piece in the following way\nLetter then number e.g B1, C4, H8\n";
-//        std::cout << "White is uppercase and black is lowercase\nWhite moves first\n";
-//        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+        std::cout << "Enter you choice of piece in the following way\nLetter then number e.g B1, C4, H8\n";
+        std::cout << "White is uppercase and black is lowercase\nWhite moves first\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));
         // Begins the game loop, will happen until someone has lost
         while(end == true){
             // Prints the board
@@ -633,26 +1467,26 @@ public:
             // Uses the setMoveAmount function to set the move amount depending on the inputted piece
             setMoveAmount();
             // Checks to see if the selection is upper and that it's whites turn
-//            if(isupper(*selection) && whiteTurn == true){
-//                whiteTurn = false;
-//                blackTurn = true;
-//                movePiece();
-//            }
-//            // Otherwise checks to see if it's blacks turn and if the selection is lower
-//            else if(islower(*selection) && blackTurn == true){
-//                whiteTurn = true;
-//                blackTurn = false;
-//                movePiece();
-//            }
-//            // Otherwise will inform the user that they've selected the wrong side
-//            else {
-//                if(whiteTurn == true){
-//                    printf("You choose the wrong side you are white\n");
-//                }
-//                else{
-//                    printf("You choose the wrong side you are black\n");
-//                }
-//            }
+            if(isupper(*selection) && whiteTurn == true){
+                whiteTurn = false;
+                blackTurn = true;
+                movePiece();
+            }
+            // Otherwise checks to see if it's blacks turn and if the selection is lower
+            else if(islower(*selection) && blackTurn == true){
+                whiteTurn = true;
+                blackTurn = false;
+                movePiece();
+            }
+            // Otherwise will inform the user that they've selected the wrong side
+            else {
+                if(whiteTurn == true){
+                    printf("You choose the wrong side you are white\n");
+                }
+                else{
+                    printf("You choose the wrong side you are black\n");
+                }
+            }
             // Moves the piece
             movePiece();
             // Sleeps the thread for 2000 milliseconds (2 secs)
